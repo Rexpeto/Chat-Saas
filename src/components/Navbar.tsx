@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Container } from ".";
+import { Container, GetIcons } from ".";
 import Image from "next/image";
 import { buttonVariants } from "./ui";
+import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const NavBar = () => {
   return (
@@ -25,6 +26,16 @@ const NavBar = () => {
             >
               Pricing
             </Link>
+
+            <LoginLink
+              className={buttonVariants({ size: "sm", variant: "ghost" })}
+            >
+              Sign in
+            </LoginLink>
+
+            <RegisterLink className={buttonVariants({ size: "sm" })}>
+              Get Started <GetIcons icon="MdKeyboardArrowRight" />
+            </RegisterLink>
           </div>
         </div>
       </Container>
