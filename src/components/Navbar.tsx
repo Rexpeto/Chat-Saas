@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Container, GetIcons } from ".";
+import { Container, GetIcons, SwitchTheme } from ".";
 import Image from "next/image";
 import { buttonVariants } from "./ui";
 import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/server";
@@ -36,6 +36,12 @@ const NavBar = () => {
             <RegisterLink className={buttonVariants({ size: "sm" })}>
               Get Started <GetIcons icon="MdKeyboardArrowRight" />
             </RegisterLink>
+
+            <SwitchTheme />
+          </div>
+
+          <div className="sm:hidden">
+            <SwitchTheme />
           </div>
         </div>
       </Container>
