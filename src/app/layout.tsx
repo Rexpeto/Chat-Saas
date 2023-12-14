@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib";
-import { Navbar } from "@/components";
+import { Navbar, Theme } from "@/components";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,15 +17,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "min-w-screen font-sans antialiased grainsy dark:bg-gray-950",
           inter.className,
         )}
       >
-        <Navbar />
-        {children}
+        <Theme>
+          <Navbar />
+          {children}
+        </Theme>
       </body>
     </html>
   );
