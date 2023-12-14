@@ -25,7 +25,7 @@ const Hero = () => {
           target="_blank"
           className={buttonVariants({
             size: "lg",
-            className: "mt-5 dark:bg-white dark:text-black",
+            className: "mt-5",
           })}
         >
           Get Started <GetIcons icon="IoIosArrowRoundForward" />
