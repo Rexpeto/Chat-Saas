@@ -2,6 +2,8 @@ import * as Io from "react-icons/io";
 import * as Md from "react-icons/md";
 import * as Pi from "react-icons/pi";
 import * as Im from "react-icons/im";
+import * as Rx from "react-icons/rx";
+import * as Gi from "react-icons/gi";
 
 interface Props {
   icon: string;
@@ -15,6 +17,8 @@ const GetIcon = ({ icon, className }: Props) => {
     iconsMap.set("Md", Md);
     iconsMap.set("Pi", Pi);
     iconsMap.set("Im", Im);
+    iconsMap.set("Rx", Rx);
+    iconsMap.set("Gi", Gi);
 
     return iconsMap.get(iconName.substring(0, 2));
   };
