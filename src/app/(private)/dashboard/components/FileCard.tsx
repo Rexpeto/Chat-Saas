@@ -2,14 +2,23 @@ import { GetIcons } from "@/components";
 import Link from "next/link";
 import { Button } from "@/components/ui";
 import { trpc } from "@/app/_trpc/client";
+import { useState } from "react";
 
 const FileCard = ({ file }: any) => {
+  const [currentlyDeleting, setCurrentlyDeleting] = useState<string | null>(
+    null,
+  );
+
   const utils = trpc.useContext();
 
   const { mutate: deleteFile } = trpc.deleteFile.useMutation({
     onSuccess: () => {
       utils.getUserFiles.invalidate();
     },
+    onMutate: ({ id }) => {
+      setCurrentlyDeleting(id);
+    },
+    onSettled: () => {},
   });
 
   return (
@@ -48,7 +57,11 @@ const FileCard = ({ file }: any) => {
           size="sm"
           variant="destructive"
         >
-          <GetIcons icon="PiTrashLight" className="text-white" />
+          {currentlyDeleting === file.id ? (
+            <GetIcons icon="ImSpinner2" className="animate-spin text-white" />
+          ) : (
+            <GetIcons icon="PiTrashLight" className="text-white" />
+          )}
         </Button>
       </div>
     </div>
