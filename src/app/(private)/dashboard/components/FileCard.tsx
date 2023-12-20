@@ -4,7 +4,13 @@ import { Button } from "@/components/ui";
 import { trpc } from "@/app/_trpc/client";
 
 const FileCard = ({ file }: any) => {
-  const { mutate: deleteFile } = trpc.deleteFile.useMutation();
+  const utils = trpc.useContext();
+
+  const { mutate: deleteFile } = trpc.deleteFile.useMutation({
+    onSuccess: () => {
+      utils.getUserFiles.invalidate();
+    },
+  });
 
   return (
     <div className="col-span-1 divide-y divide-gray-200 dark:divide-gray-700 rounded-lg bg-gray-200/60 dark:bg-gray-800 shadow hover:shadow-lg transition duration-200">
