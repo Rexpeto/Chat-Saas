@@ -3,6 +3,7 @@
 import { GetIcons } from "@/components";
 import { Button, Dialog, DialogContent, DialogTrigger } from "@/components/ui";
 import { useState } from "react";
+import { UploadDropzone } from ".";
 
 const UploadButton = () => {
   const [IsOpen, setIsOpen] = useState<boolean>(false);
@@ -20,7 +21,9 @@ const UploadButton = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>Example</DialogContent>
+      <DialogContent>
+        <UploadDropzone />
+      </DialogContent>
     </Dialog>
   );
 };
