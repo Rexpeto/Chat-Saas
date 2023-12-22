@@ -1,10 +1,43 @@
 import GetIcon from "@/components/GetIcons";
+import { Progress } from "@/components/ui";
+import { useState } from "react";
 import Dropzone, { DropzoneState } from "react-dropzone";
 
 const UploadDropzone = () => {
+  const [isUploading, setIsUploading] = useState<boolean | null>(null);
+  const [progress, setProgress] = useState<number>(0);
+
+  const startSimulatedUpload = () => {
+    setIsUploading(true);
+    setProgress(0);
+
+    const interval = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress >= 95) {
+          clearInterval(interval);
+          return oldProgress;
+        }
+
+        return oldProgress + 5;
+      });
+    }, 500);
+
+    return interval;
+  };
+
   return (
-    <Dropzone multiple={false}>
-      {({ getRootProps, getInputProps, acceptedFiles }) => (
+    <Dropzone
+      multiple={false}
+      onDrop={async (acceptedFiles) => {
+        startSimulatedUpload();
+
+        // note: handle upload here
+
+        clearInterval(startSimulatedUpload());
+        setProgress(100);
+      }}
+    >
+      {({ getRootProps, getInputProps, acceptedFiles }: DropzoneState) => (
         <div
           {...getRootProps()}
           className="border border-dashed border-gray-300 dark:border-gray-700 h-64 m-4 rounded-lg"
@@ -38,6 +71,12 @@ const UploadDropzone = () => {
                   </div>
                 </div>
               ) : null}
+
+              {isUploading && (
+                <div className="max-w-xs mx-auto w-full mt-4">
+                  <Progress value={progress} />
+                </div>
+              )}
 
               <input
                 {...getInputProps()}
