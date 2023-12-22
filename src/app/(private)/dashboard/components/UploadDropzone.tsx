@@ -26,8 +26,13 @@ const UploadDropzone = () => {
               </div>
 
               {acceptedFiles && acceptedFiles[0] ? (
-                <div className="max-w-xs bg-white flex items-center rounded-md overflow-hidden outline outline-[1px] outline-zinc-200 divide-x divide-zinc-200">
-                  <div className="px-3 py-2 h-full grid place-items-center"></div>
+                <div className="max-w-xs bg-white dark:bg-gray-800 flex items-center rounded-md overflow-hidden outline outline-[1px] outline-zinc-200 dark:outline-gray-700 divide-x divide-zinc-200 dark:divide-zinc-700">
+                  <div className="px-3 py-2 h-full grid place-items-center">
+                    <GetIcon
+                      icon="ImFilePdf"
+                      className="text-zinc-500 dark:text-white"
+                    />
+                  </div>
                   <div className="px-3 py-2 h-full text-sm truncate">
                     {acceptedFiles[0].name}
                   </div>
