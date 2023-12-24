@@ -1,11 +1,31 @@
+"use client";
+
+import { trpc } from "@/app/_trpc/client";
+import { GetIcons } from "@/components";
 import GetIcon from "@/components/GetIcons";
-import { Progress } from "@/components/ui";
+import { Progress, useToast } from "@/components/ui";
+import { useUploadThing } from "@/lib/uploadthing";
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 import Dropzone, { DropzoneState } from "react-dropzone";
 
 const UploadDropzone = () => {
+  const router = useRouter();
+
   const [isUploading, setIsUploading] = useState<boolean | null>(null);
   const [progress, setProgress] = useState<number>(0);
+
+  const { startUpload } = useUploadThing("pdfUploader");
+  const { toast } = useToast();
+
+  const { mutate: startPolling } = trpc.getFile.useMutation({
+    onSuccess: (file) => {
+      router.push(`/dashboard/${file.id}`);
+    },
+    retry: true,
+    retryDelay: 500,
+  });
 
   const startSimulatedUpload = () => {
     setIsUploading(true);
@@ -31,10 +51,30 @@ const UploadDropzone = () => {
       onDrop={async (acceptedFiles) => {
         startSimulatedUpload();
 
-        // note: handle upload here
+        const res = await startUpload(acceptedFiles);
+
+        if (!res) {
+          return toast({
+            title: "Upload failed",
+            description: "Please try again",
+            variant: "destructive",
+          });
+        }
+
+        const [fileResponse] = res;
+        const key = fileResponse?.key;
+
+        if (!key) {
+          return toast({
+            title: "Upload failed",
+            description: "Please try again",
+            variant: "destructive",
+          });
+        }
 
         clearInterval(startSimulatedUpload());
         setProgress(100);
+        startPolling({ key });
       }}
     >
       {({ getRootProps, getInputProps, acceptedFiles }: DropzoneState) => (
@@ -75,6 +115,19 @@ const UploadDropzone = () => {
               {isUploading && (
                 <div className="max-w-xs mx-auto w-full mt-4">
                   <Progress value={progress} />
+
+                  {progress === 100 && (
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      <GetIcons
+                        icon="ImSpinner2"
+                        className="animate-spin text-zinc-500 dark:text-gray-300"
+                      />
+
+                      <p className="text-sm text-zinc-500 dark:text-gray-300">
+                        Redirecting...
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
 
