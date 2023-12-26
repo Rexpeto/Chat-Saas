@@ -7,6 +7,10 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import { useResizeDetector } from "react-resize-detector";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "@/lib";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -18,8 +22,33 @@ const PdfViewer = ({ url }: Props) => {
   const { toast } = useToast();
   const { width, ref } = useResizeDetector();
 
+  /// FEAT: Add pagination
   const [numPages, setNumPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  /// FEAT: Validate page number
+  const CustomPageValidator = z.object({
+    page: z
+      .string()
+      .refine((num) => Number(num) > 0 && Number(num) <= numPages!),
+  });
+
+  type TCustomPageValidator = z.infer<typeof CustomPageValidator>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<TCustomPageValidator>({
+    defaultValues: { page: "1" },
+    resolver: zodResolver(CustomPageValidator),
+  });
+
+  const handlePageSubmit = ({ page }: TCustomPageValidator) => {
+    setCurrentPage(Number(page));
+    setValue("page", String(page));
+  };
 
   return (
     <div className="flex flex-col items-center bg-white dark:bg-gray-900 rounded shadow-lg w-full">
@@ -38,12 +67,16 @@ const PdfViewer = ({ url }: Props) => {
 
           <div className="flex items-center gap-1.5">
             <Input
-              className="w-16 h-8 text-sm"
-              min={1}
-              max={numPages}
-              type="number"
-              value={currentPage}
-              onChange={(e) => setCurrentPage(Number(e.target.value))}
+              className={cn(
+                "w-16 h-8 text-sm focus-visible:ring-1 focus-visible:ring-blue-600 transition",
+                errors.page && "border-red-500 focus-visible:ring-0",
+              )}
+              {...register("page")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit(handlePageSubmit)();
+                }
+              }}
             />
             <p className="space-x-1 text-sm text-zinc-700 dark:text-zinc-400">
               <span>/</span> <span>{numPages}</span>
