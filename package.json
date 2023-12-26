@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.3.1",
+    "@hookform/resolvers": "^3.3.2",
     "@kinde-oss/kinde-auth-nextjs": "^1.8.18",
     "@mantine/hooks": "^7.0.1",
     "@mapbox/node-pre-gyp": "^1.0.11",
