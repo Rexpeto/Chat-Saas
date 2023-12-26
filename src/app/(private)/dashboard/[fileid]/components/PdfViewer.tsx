@@ -1,7 +1,15 @@
 "use client";
 
 import { GetIcons } from "@/components";
-import { Button, Input, useToast } from "@/components/ui";
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Input,
+  useToast,
+} from "@/components/ui";
 import { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -11,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib";
+import SimpleBar from "simplebar-react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -21,6 +30,7 @@ interface Props {
 const PdfViewer = ({ url }: Props) => {
   const { toast } = useToast();
   const { width, ref } = useResizeDetector();
+  const [scale, setScale] = useState<number>(1);
 
   /// FEAT: Add pagination
   const [numPages, setNumPages] = useState<number>(1);
@@ -94,33 +104,64 @@ const PdfViewer = ({ url }: Props) => {
             <GetIcons icon="MdArrowForwardIos" className="m-0" />
           </Button>
         </div>
+
+        <div className="space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button arial-label="Zoom" className="gap-1.5" variant="outline">
+                <GetIcons icon="MdOutlineSearch" />
+                {scale * 100}%
+                <GetIcons icon="LuChevronDown" className="opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => setScale(1)}>
+                100%
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onSelect={() => setScale(1.5)}>
+                150%
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onSelect={() => setScale(2)}>
+                200%
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="flex-1 max-h-screen w-full">
-        <div ref={ref}>
-          <Document
-            loading={
-              <div className="w-full my-10 flex justify-center items-center">
-                <GetIcons
-                  icon="ImSpinner2"
-                  className="animate-spin text-4xl text-blue-600"
-                />
-              </div>
-            }
-            onLoadError={() =>
-              toast({
-                title: "Error loading file",
-                description: "Please try again later",
-                variant: "destructive",
-              })
-            }
-            onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-            file={url}
-            className="max-h-full"
-          >
-            <Page width={width ? width : 1} pageNumber={currentPage} />
-          </Document>
-        </div>
+        <SimpleBar autoHide={false} className="max-h-[calc(100vh-10rem)]">
+          <div ref={ref}>
+            <Document
+              loading={
+                <div className="w-full my-10 flex justify-center items-center">
+                  <GetIcons
+                    icon="ImSpinner2"
+                    className="animate-spin text-4xl text-blue-600"
+                  />
+                </div>
+              }
+              onLoadError={() =>
+                toast({
+                  title: "Error loading file",
+                  description: "Please try again later",
+                  variant: "destructive",
+                })
+              }
+              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+              file={url}
+              className="max-h-full"
+            >
+              <Page
+                width={width ? width : 1}
+                pageNumber={currentPage}
+                scale={scale}
+              />
+            </Document>
+          </div>
+        </SimpleBar>
       </div>
     </div>
   );
