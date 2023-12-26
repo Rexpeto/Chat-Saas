@@ -4,3 +4,4 @@ export * from "./progress";
 export * from "./toast";
 export * from "./use-toast";
 export * from "./input";
+export * from "./dropdown-menu";
