@@ -82,6 +82,7 @@ const PdfViewer = ({ url }: Props) => {
                 errors.page && "border-red-500 focus-visible:ring-0",
               )}
               {...register("page")}
+              value={currentPage.toString()}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleSubmit(handlePageSubmit)();
@@ -158,6 +159,14 @@ const PdfViewer = ({ url }: Props) => {
                 width={width ? width : 1}
                 pageNumber={currentPage}
                 scale={scale}
+                loading={
+                  <div className="w-full my-10 flex justify-center items-center">
+                    <GetIcons
+                      icon="ImSpinner2"
+                      className="animate-spin text-4xl text-blue-600"
+                    />
+                  </div>
+                }
               />
             </Document>
           </div>
