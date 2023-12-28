@@ -38,7 +38,7 @@ const Page = async ({ params }: PageProps) => {
         </div>
 
         <div className="shrink-0 flex-[0.75] border-t lg:border-l lg:border-t-0 border-gray-300 dark:border-gray-800 lg:w-96">
-          <Chat />
+          <Chat fileId={file.id} />
         </div>
       </div>
     </div>
