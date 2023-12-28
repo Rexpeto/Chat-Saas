@@ -12,9 +12,10 @@ datasource db {
 }
 
 model User {
-    id    String @id @default(cuid())
-    email String @unique
-    file  File[]
+    id       String    @id @default(cuid())
+    email    String    @unique
+    file     File[]
+    messages Message[]
 
     stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
     stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
@@ -33,10 +34,27 @@ model File {
     id           String       @id @default(cuid())
     name         String
     uploadStatus UploadStatus @default(Pending)
-    url          String
-    key          String
-    createdAt    DateTime     @default(now())
-    updatedAt    DateTime     @default(now())
-    User         User?        @relation(fields: [userId], references: [id])
-    userId       String?
+
+    url      String
+    key      String
+    messages Message[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+    User      User?    @relation(fields: [userId], references: [id])
+    userId    String?
+}
+
+model Message {
+    id   String @id @default(cuid())
+    text String @db.Text()
+
+    isUserMessage Boolean
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    User      User?    @relation(fields: [userId], references: [id])
+    userId    String?
+    File      File?    @relation(fields: [fileId], references: [id])
+    fileId    String?
 }
